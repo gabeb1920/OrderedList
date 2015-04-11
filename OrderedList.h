@@ -50,15 +50,16 @@ public:
 		head = NULL;
 		tail = NULL;
 	}
-	OrderedList(OrderedList<T> & newLL);
+	OrderedList(OrderedList<T> & newOL);
 	// Destructor
 	~OrderedList();
-	// Other functions
+	// Get functions
 	ListNode<T> * begin() { return *head; }
 	ListNode<T> * end() { return NULL; }
+	ListNode<T> * exists(const T & data);
+	// Set functions
 	void insert(const T & newData);
 	void remove(const T & oldData);
-	ListNode<T> * exists(const T & data);
 	// Overloaded Operators
 	template <class U>
 	friend std::ostream& operator<<(std::ostream& out, const OrderedList<U> rhs);
@@ -77,7 +78,7 @@ OrderedList<T>::OrderedList(OrderedList<T> & newOL) {
 		this->insert(temp->getData());
 		temp = temp->getNext();
 	}
-}
+} // OrderedList<T>::OrderedList(OrderedList<T> & newOL)
 
 // Destructor
 template <class T>
@@ -90,7 +91,25 @@ OrderedList<T>::~OrderedList() {
 	}
 } // OrderedList<T>::~OrderedList()
 
-// Other functions
+// Get functions
+template <class T>
+ListNode<T> * OrderedList<T>::exists(const T & data) {
+
+	ListNode<T> * currentNode = head;
+	if (currentNode != NULL) {
+		// Step through the list until we reach the end or find a
+		// node that matches
+		while (currentNode->getData() != data && currentNode
+			!= NULL) {
+
+			currentNode = currentNode->getNext();
+		}
+	}
+
+	return currentNode;
+} // ListNode<T> * OrderedList<T>::exists(const T & data)
+
+// Set functions
 template <class T>
 void OrderedList<T>::insert(const T & newData) {
 	ListNode<T> * temp = new ListNode<T>;
@@ -161,24 +180,7 @@ void OrderedList<T>::remove(const T & oldData) {
 		next->setPrev(previous);
 		delete currentNode;
 	}
-}
-
-template <class T>
-ListNode<T> * OrderedList<T>::exists(const T & data) {
-	
-	ListNode<T> * currentNode = head;
-	if (currentNode != NULL) {
-		// Step through the list until we reach the end or find a
-		// node that matches
-		while (currentNode->getData() != data && currentNode
-			!= NULL) {
-
-			currentNode = currentNode->getNext();
-		}
-	}
-
-	return currentNode;
-}
+} // void OrderedList<T>::remove(const T & oldData)
 
 // Overloaded Operators
 template <class T>
@@ -190,5 +192,5 @@ std::ostream& operator<<(std::ostream& out, const OrderedList<T> rhs) {
 	}
 
 	return out;
-}
+} // std::ostream& operator<<(std::ostream& out, const OrderedList<T> rhs)
 #endif
