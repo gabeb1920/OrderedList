@@ -6,6 +6,12 @@
 * the template class OrderedList which is a doubly linked list of
 * ordered ListNodes
 *
+* V1.0(10/4/2015) - Original version with basic functionality
+* V1.1(13/4/2015):
+* - Added function to remove duplicate entries
+*       - deleteDups() - Takes longer but no extra space
+* - Added function to remove node from list
+*       - remove(ListNode<T> * data)
 */
 
 #include <iostream>
@@ -60,9 +66,12 @@ public:
 	// Set functions
 	void insert(const T & newData);
 	void remove(const T & oldData);
+	void remove(ListNode<T> * data);
 	// Overloaded Operators
 	template <class U>
 	friend std::ostream& operator<<(std::ostream& out, const OrderedList<U> rhs);
+	// Other functions
+	void deleteDups();
 };
 
 // OrderedList functions
@@ -173,14 +182,25 @@ void OrderedList<T>::remove(const T & oldData) {
 			currentNode = currentNode->getNext();
 		}
 	}
-	if (currentNode != NULL) {
-		ListNode<T> * previous = currentNode->getPrev();
-		ListNode<T> * next = currentNode->getNext();
-		previous->setNext(next);
-		next->setPrev(previous);
-		delete currentNode;
-	}
+	if (currentNode != NULL)
+		this->remove(currentNode);
 } // void OrderedList<T>::remove(const T & oldData)
+
+template <class T>
+void OrderedList<T>::remove(ListNode<T> * data) {
+	if (data == NULL)
+		return;
+
+	ListNode<T> * next = data->getNext();
+	ListNode<T> * prev = data->getPrev();
+
+	if (next != NULL)
+		next->setPrev(prev);
+	if (prev != NULL)
+		prev->setNext(next);
+
+	delete data;
+} // void OrderedList<T>::remove(ListNode<T> * data)
 
 // Overloaded Operators
 template <class T>
@@ -193,4 +213,34 @@ std::ostream& operator<<(std::ostream& out, const OrderedList<T> rhs) {
 
 	return out;
 } // std::ostream& operator<<(std::ostream& out, const OrderedList<T> rhs)
+
+// Other functions
+template <class T>
+void OrderedList<T>::deleteDups() {
+	// Return if the list is empty
+	if (head == NULL)
+		return;
+
+	// Start at the beginning of the list
+	ListNode<T> * prev = head;
+	ListNode<T> * current = head->getNext();
+	while (current != NULL) {
+		// Check all previous nodes to look for duplicate data
+		ListNode<T> * runner = head;
+		while (runner != current) {
+			if (runner->getData() == current->getData()) {
+				// If duplicate exists then remove
+				ListNode<T> * tmp = current->getNext();
+				this->remove(current);
+				current = tmp;
+				break; // We can break because all the previous duplicates will have already been removed
+			}
+			runner = runner->getNext();
+		}
+		if (runner == current) {
+			prev = current;
+			current = current->getNext();
+		}
+	}
+} // void OrderedList<T>::deleteDups()
 #endif

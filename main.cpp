@@ -14,9 +14,10 @@ int main() {
 
 	OrderedList<int> intList;
 
-	// Insert in reverse order to show that the list will insert ordered
+	// Insert in reverse order to show that the list will insert ordered with duplicates
 	for (int i = 10; i > 0; --i)
-		intList.insert(i);
+		for (int x = 0; x < 2; ++x)
+			intList.insert(i);
 
 	cout << intList << endl;
 
@@ -26,9 +27,14 @@ int main() {
 	if (int2 != NULL)
 		cout << "Found int 2 in OrderedList: " << int2->getData() << endl;
 
-	// Demonstrate remove function
+	// Demonstrate remove function with data
 	intList.remove(2);
-	cout << "Now with 2 removed:" << endl;
+	cout << "Now with the first 2 removed:" << endl;
+	cout << intList << endl;
+
+	// Demonstrate deleteDups function
+	intList.deleteDups();
+	cout << "Now after deleteDups():" << endl;
 	cout << intList << endl;
 
 	int temp = 0;
